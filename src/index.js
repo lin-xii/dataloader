@@ -449,10 +449,17 @@ function getValidCacheKeyFn<K, C>(options: ?Options<K, any, C>): K => C {
   return cacheKeyFn;
 }
 
-// Private: given the DataLoader's options, produce a CacheMap to be used.
+// return 一个高仿的Map对象
+/**
+ * Private: given the DataLoader's options, produce a CacheMap to be used.
+ * @param {*} options
+ * @returns a similar Map object
+ */
 function getValidCacheMap<K, V, C>(
   options: ?Options<K, V, C>,
 ): CacheMap<C, Promise<V>> | null {
+  // 是否开启缓存
+  // is cache open
   const shouldCache = !options || options.cache !== false;
   if (!shouldCache) {
     return null;
@@ -463,6 +470,10 @@ function getValidCacheMap<K, V, C>(
   }
   if (cacheMap !== null) {
     const cacheFunctions = ['get', 'set', 'delete', 'clear'];
+    // 验证是否实现了缓存的方法
+    // 但是, 感觉是有缺陷的, 如果实现的get有问题, 校验虽然能过去, 但实际还是会有问题的
+    // 不过, 确实是一种校验对象是否具备指定方法的思路
+    // js这种弱类型语言, 也只能这样了
     const missingFunctions = cacheFunctions.filter(
       fnName => cacheMap && typeof cacheMap[fnName] !== 'function',
     );
@@ -472,6 +483,7 @@ function getValidCacheMap<K, V, C>(
       );
     }
   }
+  // 总之, getValidCacheMap返回的是一个高仿的Map对象
   return cacheMap;
 }
 
