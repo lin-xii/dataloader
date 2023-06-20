@@ -438,6 +438,7 @@ function getValidBatchScheduleFn(
 }
 
 // Private: given the DataLoader's options, produce a cache key function.
+// TODO: return a function for generate cache key ?
 function getValidCacheKeyFn<K, C>(options: ?Options<K, any, C>): K => C {
   const cacheKeyFn = options && options.cacheKeyFn;
   if (cacheKeyFn === undefined) {
