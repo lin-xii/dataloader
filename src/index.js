@@ -487,6 +487,12 @@ function getValidCacheMap<K, V, C>(
   return cacheMap;
 }
 
+/**
+ * 给DataLoader实例命名, 看着没啥用
+ * // 但是在调试的时候, 会有用. 这一句是copilot加的, 看着好像还挺有道理的
+ * @param {*} options
+ * @returns {string} a valid name
+ */
 function getValidName<K, V, C>(options: ?Options<K, V, C>): string | null {
   if (options && options.name) {
     return options.name;
