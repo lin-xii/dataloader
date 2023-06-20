@@ -502,6 +502,7 @@ function getValidName<K, V, C>(options: ?Options<K, V, C>): string | null {
 }
 
 // Private
+// 判断是否是类数组
 function isArrayLike(x: mixed): boolean {
   return (
     typeof x === 'object' &&
