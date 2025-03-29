@@ -53,7 +53,8 @@ class DataLoader<K, V, C = K> {
     }
     this._batchLoadFn = batchLoadFn;
     this._maxBatchSize = getValidMaxBatchSize(options);
-    this._batchScheduleFn = getValidBatchScheduleFn(options);
+    this._batchScheduleFn = enqueuePostPromiseJob;
+    // this._batchScheduleFn = getValidBatchScheduleFn(options);
     this._cacheKeyFn = getValidCacheKeyFn(options);
     this._cacheMap = getValidCacheMap(options);
     this._batch = null;
@@ -80,10 +81,13 @@ class DataLoader<K, V, C = K> {
     }
 
     const batch = getCurrentBatch(this);
+    // new Map()
     const cacheMap = this._cacheMap;
+    // key=>key; 也就是说, 默认的cacheKeyFn是一个返回自己的函数
     const cacheKey = this._cacheKeyFn(key);
 
     // If caching and there is a cache-hit, return cached Promise.
+    // 空Map也是true
     if (cacheMap) {
       const cachedPromise = cacheMap.get(cacheKey);
       if (cachedPromise) {
@@ -395,6 +399,8 @@ function failedDispatch<K, V>(
 }
 
 // Private: Resolves the Promises for any cache hits in this batch.
+// TODO: 如果是轮训执行promise, 那这个所谓的batch, 有什么意义呢?
+// batch后的load?
 function resolveCacheHits(batch: Batch<any, any>) {
   if (batch.cacheHits) {
     for (let i = 0; i < batch.cacheHits.length; i++) {
